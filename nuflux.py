@@ -63,7 +63,7 @@ def E_min(Ep, m=1e-10):
     return (m*Ep)/(2*Ep+m)
 #
 def dsigma(Ep, E, g, M, m): 
-    return sigma(Ep, g, M, m)*(1-theta(E,Ep))/(Ep-E_min(Ep))*theta(E,E_min(Ep)) + sigma(m, g, M, m)*(1-theta(E, m))/(m-E_min(m))*theta(E,E_min(m)) 
+    return sigma(Ep, g, M, m)*(1-theta(E,Ep))/(Ep-E_min(Ep))*theta(E,E_min(Ep))
     
     
 #def dsigma(E, g, M, m):  # cm^2/GeV
