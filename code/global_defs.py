@@ -69,6 +69,7 @@ GN = 6.70861e-39 # [GeV^-2]
 # Light speed
 
 speed_light_km_per_s = 299792458.e-3 # [km s^-1]
+speed_light_cm_per_s = 299792458.e2 # [km s^-1]
 
 # Average inelasticity <y> for neutrino-nucleon DIS, above Enu ~ 100 TeV
 
@@ -102,6 +103,7 @@ conv_Gpc_to_inv_eV = conv_Gpc_to_inv_GeV*1.e-9 # Gpc --> eV^-1
 conv_kpc_to_inv_eV = conv_Gpc_to_inv_eV*1.e-6 # kpc --> eV^-1
 conv_pc_to_km = 3.0857e13 # pc --> km
 conv_kpc_to_cm = conv_pc_to_km*1.e3*1.e5 # kpc --> cm
+conv_cm_to_Mpc = 1.e-3/conv_kpc_to_cm
 conv_kpc_to_inv_eV = conv_kpc_to_cm*conv_cm_to_inv_eV
 conv_inv_eV_to_kpc = 1./conv_kpc_to_inv_eV
 conv_inv_eV_to_km = conv_inv_eV_to_kpc*1.e3*conv_pc_to_km
@@ -125,6 +127,7 @@ OmegaL = 0.692 # Adimensional vacuum energy fraction
 OmegaK = 0.00 # Adimensional curvature energy fraction
 OmegaB = 0.02226/h/h # Adimensional baryon energy fraction [PDG]
 H0 = 100.0 * h # Hubble constant [km s^-1 Mpc^-1]
+H0_inv_s = h / (9.777752e9*365.*24.*60.*60.) # Hubble constant [s^-1]
 Hubble_horizon_0 = speed_light_km_per_s / H0 * 1.e-3 # [Gpc]
 
 

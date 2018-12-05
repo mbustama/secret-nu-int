@@ -40,7 +40,41 @@ def Cross_Section_Nu_Nu_S_Channel_Scalar(energy_nu, mass_mediator, \
     return cs # [cm^2]
 
 
-def Diff_Cross_Section_Nu_Nu_S_Channel_Scalar(energy_nu, mass_mediator, \
+def Diff_Cross_Section_Nu_Nu_S_Channel_Scalar(energy_nu_in, energy_nu_out, \
+    mass_mediator, coupling_mediator, mass_neutrino=1.e-10):
+
+    if (energy_nu_in < energy_nu_out):
+        return 0.0
+
+    ###########################################################################
+    # Calculate the cross section here to save the call to another function
+    ###########################################################################
+
+    # prefactor = pow(coupling_mediator, 4.0)/(4.*np.pi)
+    # mass_mediator_sq = mass_mediator*mass_mediator
+    # width_mediator = \
+    #     coupling_mediator*coupling_mediator*mass_mediator / (4.*np.pi)
+    # s = 2.*energy_nu_in*mass_neutrino
+
+    # den = pow(s-mass_mediator_sq, 2.0) + \
+    #         mass_mediator_sq*width_mediator*width_mediator
+
+    # cs = hbar_c_sq * prefactor * s / den # [cm^2]
+
+    ###########################################################################
+    # Distribution function of outgoing neutrinos
+    ###########################################################################
+
+    cs = Cross_Section_Nu_Nu_S_Channel_Scalar(energy_nu_in, mass_mediator,
+            coupling_mediator, mass_neutrino=mass_neutrino) # [cm^2]
+    energy_nu_ratio = energy_nu_out/energy_nu_in
+    dist_fun = 3.0/energy_nu_in * \
+                (pow(energy_nu_ratio, 2.0) + pow(1.0-energy_nu_ratio, 2.0))
+
+    return cs*dist_fun
+
+
+def Diff_Cross_Section_Nu_Nu_S_Channel_Scalar_v0(energy_nu, mass_mediator, \
     coupling_mediator, mass_neutrino=1.e-10):
 
     ###########################################################################
@@ -382,7 +416,7 @@ def Plot_Diff_Cross_Section_Nu_Nu_S_Channel_Scalar_v1(lst_mass_mediator=[0.1], \
     return
 
 
-
+"""
 lst_mass_mediator = [1.e-1] # [GeV]
 lst_coupling_mediator = [0.3]
 lst_legends=['']
@@ -394,7 +428,7 @@ Plot_Diff_Cross_Section_Nu_Nu_S_Channel_Scalar_v1(
     lst_legends=lst_legends,
     mass_neutrino=mass_neutrino,
     output_format='pdf')
-
+"""
 
 """
 lst_mass_mediator = [1.e-1, 1.e-2, 3.e-3, 1.e-3] # [GeV]
