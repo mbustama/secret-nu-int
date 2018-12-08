@@ -31,6 +31,7 @@ def Neutrino_Flux(lst_energy_nu, mass_mediator=0.03, coupling_mediator=0.01,
     flag_include_source_injection=True,
     flag_include_attenuation=True,
     flag_include_regeneration=True,
+    delta_z=1.e-2,
     atol=1.e-4, rtol=1.e-4, sol_method='dop853', sol_nsteps=1000,
     flag_regeneration_integ_method='simps'):
     """
@@ -134,7 +135,7 @@ def Neutrino_Flux(lst_energy_nu, mass_mediator=0.03, coupling_mediator=0.01,
     lst_nu_density = [0.0]*len(lst_energy_nu)
 
     # Redshift step
-    dz = 1.e-1 #1.e-2
+    dz = delta_z
 
     z = z_max
     # while(solver.successful() and solver.t > z_min):

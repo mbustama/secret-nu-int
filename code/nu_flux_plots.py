@@ -60,7 +60,7 @@ def Plot_Nu_Flux_Earth_Compare_Terms(mass_mediator=0.1,
     pylab.xlim([1.e3, 1.e8])
     ax.set_xscale('log')
 
-    pylab.ylim([0.0, 2.5]) # [0.0, 2.5]
+    pylab.ylim([0.0, 2.0]) # [0.0, 2.5]
     # ax.set_yscale('log')
 
     # ax_yticks_major = np.array([1.e-34, 1.e-33, 1.e-32, 1.e-31, 1.e-30, 1.e-29, 1.e-28, 1.e-27, \
@@ -85,6 +85,7 @@ def Plot_Nu_Flux_Earth_Compare_Terms(mass_mediator=0.1,
                     flag_include_source_injection=True,
                     flag_include_attenuation=False,
                     flag_include_regeneration=False,
+                    delta_z=1.e-1,
                     atol=1.e-1, rtol=1.e-1, sol_method=sol_method,
                     sol_nsteps=500)
     lst_nu_flux = [lst_energy_nu[i]*lst_energy_nu[i]*lst_nu_flux[i] \
@@ -111,6 +112,7 @@ def Plot_Nu_Flux_Earth_Compare_Terms(mass_mediator=0.1,
                     flag_include_source_injection=True,
                     flag_include_attenuation=True,
                     flag_include_regeneration=False,
+                    delta_z=1.e-1,
                     atol=1.e-1, rtol=1.e-1, sol_method=sol_method,
                     sol_nsteps=500)
     lst_nu_flux = [lst_energy_nu[i]*lst_energy_nu[i]*lst_nu_flux[i] \
@@ -136,6 +138,7 @@ def Plot_Nu_Flux_Earth_Compare_Terms(mass_mediator=0.1,
                     flag_include_source_injection=True,
                     flag_include_attenuation=True,
                     flag_include_regeneration=True,
+                    delta_z=1.e-1,
                     atol=1.e-1, rtol=1.e-1, sol_method=sol_method,
                     sol_nsteps=500, flag_regeneration_integ_method='euler')
     lst_nu_flux = [lst_energy_nu[i]*lst_energy_nu[i]*lst_nu_flux[i] \
