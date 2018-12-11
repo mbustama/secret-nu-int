@@ -153,7 +153,7 @@ def Number_Density_Relic_Nu(z):
 
 
 def Interaction_Rate(z, energy_nu, mass_mediator, coupling_mediator, \
-    mass_neutrino=1.e-10):
+    mass_neutrino=1.e-10, flag_use_integ_diff_cs=False):
     """
     Returns the interaction rate of neutrinos moving on the relic neutrino
     background, due to secret nu-nu interactions
@@ -188,10 +188,17 @@ def Interaction_Rate(z, energy_nu, mass_mediator, coupling_mediator, \
     # [Number_Density_Relic_Nu] = cm^{-3}
     # [Cross_Section_Nu_Nu_S_Channel_Scalar] = cm^2
 
-    int_rate = Number_Density_Relic_Nu(z) * \
-                Cross_Section_Nu_Nu_S_Channel_Scalar(energy_nu,
-                    mass_mediator, coupling_mediator,
-                    mass_neutrino=mass_neutrino) # [cm^{-1}]
+    if (flag_use_integ_diff_cs == True):
+
+        int_rate = Number_Density_Relic_Nu(z) * \
+                    Cross_Section_Nu_Nu_S_Channel_Scalar(energy_nu,
+                        mass_mediator, coupling_mediator,
+                        mass_neutrino=mass_neutrino) # [cm^{-1}]
+    else:
+
+        # Add code here
+        pass
+
     int_rate = int_rate * speed_light_cm_per_s # [s^{-1}]
 
     return int_rate
