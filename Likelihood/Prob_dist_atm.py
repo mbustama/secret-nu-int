@@ -27,28 +27,40 @@ Parameters:
 """
 
 
+## >>> Initialize atm. fluxes, passing fractions
+
+lst_costhz_sel, lst_energy_sel, flux_mum_conv, flux_mup_conv, \
+    flux_mum_pr, flux_mup_pr, flux_nue_conv, flux_nuebar_conv, \
+    flux_nue_pr, flux_nuebar_pr, flux_numu_conv, flux_numubar_conv, \
+    flux_numu_pr, flux_numubar_pr, flux_nutau_pr, flux_nutaubar_pr = \
+    Initialize_Atm_Fluxes(flux_set='avg', flag_return_total=False,
+    flag_return_plus_minus=False, kx=1, ky=1, s=0, verbose=0)
+
+# Passing fractions
+# Call the interpolating functions as pf_spl(energy, costhz)
+lst_energy_pf, lst_costhz_pf, pf_nue_conv, pf_nuebar_conv, pf_numu_conv, \
+    pf_numubar_conv, pf_nue_pr, pf_nuebar_pr, pf_numu_pr, pf_numubar_pr = \
+    Initialize_Passing_Fractions(kx=1, ky=1, s=0, verbose=0)
+
+mix_params_data_set ='nufit_4_0_with_sk'
+mix_params_mass_ordering ='no'
+
+# lst_mix_params is passed to NuSQuIDS and contains the mixing parameters
+# [s12sq_bf, s23sq_bf, s13sq_bf, deltaCP_bf, Delta_m2_21_bf, Delta_m2_31_bf, Delta_m2_32_bf]
+lst_mix_params = Mixing_Parameters(mix_params_data_set, mix_params_mass_ordering)[0]
+
+
 def Prob_dist_atm_conv_pr_den(nu_energy_min, nu_energy_max, nu_energy_num_nodes, costhz_npts, log10_energy_dep_int_min, log10_energy_dep_int_max, log10_energy_dep_min,
     log10_energy_dep_max, log10_energy_dep_npts, time_det_yr, volume_total, energy_nu_max, epsabs, epsrel, verbose, flag_use_atm_fluxes_conv, flag_use_atm_fluxes_pr, flag_apply_self_veto):
-    
+
     log10_energy_dep_int_step = log10_energy_dep_int_max - log10_energy_dep_int_min
 
-    mix_params_data_set ='nufit_4_0_with_sk'
-    mix_params_mass_ordering ='no'
-
-    # lst_mix_params is passed to NuSQuIDS and contains the mixing parameters
-    # [s12sq_bf, s23sq_bf, s13sq_bf, deltaCP_bf, Delta_m2_21_bf, Delta_m2_31_bf, Delta_m2_32_bf]
-    lst_mix_params = Mixing_Parameters(mix_params_data_set, mix_params_mass_ordering)[0]
 
     # Array of cos(theta_z) to compute
     lst_costhz = np.linspace(-1.0, 1.0, costhz_npts)
 
         # [Adim], [GeV], [GeV cm^{-2} s^{-1} sr^{-1}], ...
-    lst_costhz_sel, lst_energy_sel, flux_mum_conv, flux_mup_conv, \
-        flux_mum_pr, flux_mup_pr, flux_nue_conv, flux_nuebar_conv, \
-        flux_nue_pr, flux_nuebar_pr, flux_numu_conv, flux_numubar_conv, \
-        flux_numu_pr, flux_numubar_pr, flux_nutau_pr, flux_nutaubar_pr = \
-        Initialize_Atm_Fluxes(flux_set='avg', flag_return_total=False,
-        flag_return_plus_minus=False, kx=1, ky=1, s=0, verbose=verbose)
+
 
     lst_flux_earth = []
     lst_flux_det = []
@@ -134,12 +146,6 @@ def Prob_dist_atm_conv_pr_den(nu_energy_min, nu_energy_max, nu_energy_num_nodes,
 
     if (((flag_use_atm_fluxes_conv == True or flag_use_atm_fluxes_pr == True)) and \
     flag_apply_self_veto == True):
-
-        # Passing fractions
-        # Call the interpolating functions as pf_spl(energy, costhz)
-        lst_energy_pf, lst_costhz_pf, pf_nue_conv, pf_nuebar_conv, pf_numu_conv, \
-            pf_numubar_conv, pf_nue_pr, pf_nuebar_pr, pf_numu_pr, pf_numubar_pr = \
-            Initialize_Passing_Fractions(kx=1, ky=1, s=0, verbose=verbose)
 
         tmp = []
 
@@ -206,10 +212,10 @@ def Prob_dist_atm_conv_pr_den(nu_energy_min, nu_energy_max, nu_energy_num_nodes,
     Event_spec = \
         Generate_Event_Spectrum_All_Sky(lst_flux_det, lst_costhz, filename_data_out_suffix='',
             flag_save_data=False, flag_plot_histogram=False, flag_initialize_cross_sections=False,
-            flag_compute_shower_rate=True, flag_compute_track_rate=True, 
+            flag_compute_shower_rate=True, flag_compute_track_rate=True,
             flag_sh_nux_nc=True, flag_sh_nue_cc=True, flag_sh_nutau_cc=True, flag_sh_nul_electron_to_electron=True,
             flag_sh_nuebar_electron_to_tau=False, lag_sh_nuebar_electron_to_hadrons=True, flag_sh_nutau_electron_to_tau=False,
-            flag_tr_numu_cc=True, flag_tr_nutau_cc=True, flag_tr_nuebar_electron_to_tau=False, 
+            flag_tr_numu_cc=True, flag_tr_nutau_cc=True, flag_tr_nuebar_electron_to_tau=False,
             flag_tr_nutau_electron_to_tau=False, flag_tr_nuebar_electron_to_muon=False, flag_tr_numu_electron_to_muon=False,
             log10_energy_dep_min=log10_energy_dep_min, log10_energy_dep_max=log10_energy_dep_max, log10_energy_dep_npts=log10_energy_dep_npts,
             log10_energy_dep_int_min=log10_energy_dep_int_min, log10_energy_dep_int_max=log10_energy_dep_int_max, log10_energy_dep_int_step=log10_energy_dep_int_step,
@@ -220,30 +226,13 @@ def Prob_dist_atm_conv_pr_den(nu_energy_min, nu_energy_max, nu_energy_num_nodes,
 
     print("Denominator_atm=", Denominator)
 
-    return Denominator 
+    return Denominator
 
 
 def Prob_dist_atm_conv_pr_num(nu_energy_min, nu_energy_max, nu_energy_num_nodes, costhz_val, energy_dep, time_det_yr, volume_total, energy_nu_max, epsabs, epsrel, verbose,
-    flag_compute_shower_rate, flag_compute_track_rate, flag_use_atm_fluxes_conv, flag_use_atm_fluxes_pr, flag_apply_self_veto): 
-
-
-    mix_params_data_set ='nufit_4_0_with_sk'
-    mix_params_mass_ordering ='no'
-
-    # lst_mix_params is passed to NuSQuIDS and contains the mixing parameters
-    # [s12sq_bf, s23sq_bf, s13sq_bf, deltaCP_bf, Delta_m2_21_bf, Delta_m2_31_bf, Delta_m2_32_bf]
-    lst_mix_params = Mixing_Parameters(mix_params_data_set, mix_params_mass_ordering)[0]
+    flag_compute_shower_rate, flag_compute_track_rate, flag_use_atm_fluxes_conv, flag_use_atm_fluxes_pr, flag_apply_self_veto):
 
     lst_costhz = np.array([costhz_val])
-
-
-        # [Adim], [GeV], [GeV cm^{-2} s^{-1} sr^{-1}], ...
-    lst_costhz_sel, lst_energy_sel, flux_mum_conv, flux_mup_conv, \
-        flux_mum_pr, flux_mup_pr, flux_nue_conv, flux_nuebar_conv, \
-        flux_nue_pr, flux_nuebar_pr, flux_numu_conv, flux_numubar_conv, \
-        flux_numu_pr, flux_numubar_pr, flux_nutau_pr, flux_nutaubar_pr = \
-        Initialize_Atm_Fluxes(flux_set='avg', flag_return_total=False,
-        flag_return_plus_minus=False, kx=1, ky=1, s=0, verbose=verbose)
 
     lst_flux_earth = []
     lst_flux_det = []
@@ -329,12 +318,6 @@ def Prob_dist_atm_conv_pr_num(nu_energy_min, nu_energy_max, nu_energy_num_nodes,
 
     if (((flag_use_atm_fluxes_conv == True or flag_use_atm_fluxes_pr == True)) and \
     flag_apply_self_veto == True):
-
-        # Passing fractions
-        # Call the interpolating functions as pf_spl(energy, costhz)
-        lst_energy_pf, lst_costhz_pf, pf_nue_conv, pf_nuebar_conv, pf_numu_conv, \
-            pf_numubar_conv, pf_nue_pr, pf_nuebar_pr, pf_numu_pr, pf_numubar_pr = \
-            Initialize_Passing_Fractions(kx=1, ky=1, s=0, verbose=verbose)
 
         tmp = []
 
@@ -406,7 +389,7 @@ def Prob_dist_atm_conv_pr_num(nu_energy_min, nu_energy_max, nu_energy_num_nodes,
     lst_energy_nu = lst_flux_det[0][0] # [GeV]
 
     lst_flux_det_nue = lst_flux_det[0][1] # nu_e [GeV^{-1} cm^{-2} s^{-1} sr^{-1}]
-    
+
     lst_flux_det_nuebar = lst_flux_det[0][2] # nu_e-bar
 
     lst_flux_det_numu = lst_flux_det[0][3] # nu_mu
@@ -470,7 +453,7 @@ def Prob_dist_atm_conv_pr_num(nu_energy_min, nu_energy_max, nu_energy_num_nodes,
                 miniter=1, maxiter=500, epsabs=epsabs, epsrel=epsrel,
                 flag_nux_nc=True, flag_nue_cc=True, flag_nutau_cc=True,
                 flag_nul_electron_to_electron= True, flag_nuebar_electron_to_tau= False,
-                flag_nuebar_electron_to_hadrons= True, flag_nutau_electron_to_tau= False) 
+                flag_nuebar_electron_to_hadrons= True, flag_nutau_electron_to_tau= False)
 
     # === Track rate ===
 
@@ -486,43 +469,36 @@ def Prob_dist_atm_conv_pr_num(nu_energy_min, nu_energy_max, nu_energy_num_nodes,
                 energy_nu_max=energy_nu_max, integration_method='quad',
                 miniter=1, maxiter=500, epsabs=epsabs, epsrel=epsrel,
                 flag_numu_cc=True, flag_nutau_cc=True, flag_nuebar_electron_to_tau=False,
-                flag_nutau_electron_to_tau=False, flag_nuebar_electron_to_muon= False, flag_numu_electron_to_muon= False) 
+                flag_nutau_electron_to_tau=False, flag_nuebar_electron_to_muon= False, flag_numu_electron_to_muon= False)
 
-    Numerator = np.array([lst_diff_rate[0] + lst_diff_rate[1] + lst_diff_rate[2]]) 
+    Numerator = np.array([lst_diff_rate[0] + lst_diff_rate[1] + lst_diff_rate[2]])
 
     return Numerator
 
 
 
-def Prob_dist_atm_conv_pr(nu_energy_min, nu_energy_max, nu_energy_num_nodes, costhz_val, costhz_npts, energy_dep, log10_energy_dep_int_min, log10_energy_dep_int_max, log10_energy_dep_min, log10_energy_dep_max, log10_energy_dep_npts, 
-        time_det_yr, volume_total, energy_nu_max, epsabs, epsrel, verbose, flag_use_atm_fluxes_conv, flag_use_atm_fluxes_pr, flag_apply_self_veto, flag_compute_shower_rate, flag_compute_track_rate): 
+def Prob_dist_atm_conv_pr(nu_energy_min, nu_energy_max, nu_energy_num_nodes, costhz_val, costhz_npts, energy_dep, log10_energy_dep_int_min, log10_energy_dep_int_max, log10_energy_dep_min, log10_energy_dep_max, log10_energy_dep_npts,
+        time_det_yr, volume_total, energy_nu_max, epsabs, epsrel, verbose, flag_use_atm_fluxes_conv, flag_use_atm_fluxes_pr, flag_apply_self_veto, flag_compute_shower_rate, flag_compute_track_rate):
 
     num = \
         Prob_dist_atm_conv_pr_num(nu_energy_min, nu_energy_max, nu_energy_num_nodes, costhz_val, energy_dep, time_det_yr, volume_total, energy_nu_max, epsabs, epsrel, verbose,
-            flag_compute_shower_rate = flag_compute_shower_rate, flag_compute_track_rate = flag_compute_track_rate, 
+            flag_compute_shower_rate = flag_compute_shower_rate, flag_compute_track_rate = flag_compute_track_rate,
             flag_use_atm_fluxes_conv = flag_use_atm_fluxes_conv, flag_use_atm_fluxes_pr = flag_use_atm_fluxes_pr, flag_apply_self_veto = flag_apply_self_veto)
 
     den = \
-        Prob_dist_atm_conv_pr_den(nu_energy_min, nu_energy_max, nu_energy_num_nodes, costhz_npts, log10_energy_dep_int_min, log10_energy_dep_int_max, 
-            log10_energy_dep_min, log10_energy_dep_max, log10_energy_dep_npts, time_det_yr, volume_total, energy_nu_max, epsabs, epsrel, verbose, 
+        Prob_dist_atm_conv_pr_den(nu_energy_min, nu_energy_max, nu_energy_num_nodes, costhz_npts, log10_energy_dep_int_min, log10_energy_dep_int_max,
+            log10_energy_dep_min, log10_energy_dep_max, log10_energy_dep_npts, time_det_yr, volume_total, energy_nu_max, epsabs, epsrel, verbose,
             flag_use_atm_fluxes_conv = flag_use_atm_fluxes_conv, flag_use_atm_fluxes_pr = flag_use_atm_fluxes_pr, flag_apply_self_veto = flag_apply_self_veto)
 
-    prob = num/den 
+    prob = num/den
 
     print("Prob_atm=", prob)
 
-    return prob 
+    return prob
 
 
 def Prob_dist_atm_muon_den(log10_energy_dep_int_min, log10_energy_dep_int_max, log10_energy_dep_min, log10_energy_dep_max, log10_energy_dep_npts, epsabs, epsrel, verbose):
 
-    mix_params_data_set ='nufit_4_0_with_sk'
-    mix_params_mass_ordering ='no'
-
-    # lst_mix_params is passed to NuSQuIDS and contains the mixing parameters
-    # [s12sq_bf, s23sq_bf, s13sq_bf, deltaCP_bf, Delta_m2_21_bf, Delta_m2_31_bf, Delta_m2_32_bf]
-    lst_mix_params = Mixing_Parameters(mix_params_data_set, mix_params_mass_ordering)[0]
-    
     # Array of values of E_dep used to build the interpolation function of
     # dN/dE_dep that is later integrated in E_dep
     lst_log10_energy_dep = np.linspace(log10_energy_dep_min,
