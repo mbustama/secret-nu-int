@@ -8,7 +8,7 @@ import argparse
 
 from interp_atm_pdf import Initialize_Atmospheric_PDFs
 from interp_astro_pdf import Initialize_Interpolator_Astrophysical_PDF
-from full_likelihood import Log10_Likelihood
+from full_likelihood import Log_Likelihood
 
 # Recommended run:
 # python likelihood_analysis_parser.py --verbose=1 --n_live_points=200 --evidence_tolerance=0.01
@@ -41,7 +41,7 @@ verbose = args.verbose
 def Prior(cube, ndim, nparams):
 
 	# Spectral index. Uniform prior between 1.8 and 3.
-	cube[0] = 1.8+cube[0]*1.2
+	cube[0] = 2.0+cube[0] #1.8+cube[0]*1.2
 
 	# Log10 of mass of mediator [GeV]. Log uniform prior between -3.0 and -1.0.
 	cube[1] = -3.0+2.0*cube[1]
@@ -64,7 +64,7 @@ def Prior(cube, ndim, nparams):
 	return 0
 
 
-def Log10_Likelihood_MultiNest(cube, ndim, nparams):
+def Log_Likelihood_MultiNest(cube, ndim, nparams):
 
 	gamma = cube[0]
 	log10_g = cube[1]
@@ -74,7 +74,7 @@ def Log10_Likelihood_MultiNest(cube, ndim, nparams):
 	N_pr = cube[5]
 	N_mu = cube[6]
 
-	ll = Log10_Likelihood(gamma, log10_g, log10_M, N_a, N_conv, N_pr, N_mu,
+	ll = Log_Likelihood(gamma, log10_g, log10_M, N_a, N_conv, N_pr, N_mu,
             interp_astro_pdf_sh, pdf_atm_conv_sh, pdf_atm_pr_sh,
             interp_astro_pdf_tr, pdf_atm_conv_tr, pdf_atm_pr_tr,
             pdf_atm_muon_tr, num_ic_sh=58, num_ic_tr=22, verbose=verbose)
@@ -97,10 +97,11 @@ n_params = len(parameters)
 
 
 # Run MultiNest
-pymultinest.run(Log10_Likelihood_MultiNest, Prior, n_params,
+pymultinest.run(Log_Likelihood_MultiNest, Prior, n_params,
 	            outputfiles_basename='out/likelihood/',
-				resume=False, verbose=verbose, n_live_points=n_live_points,
-				seed=1, evidence_tolerance=evidence_tolerance,
+				resume=resume, verbose=verbose, n_live_points=n_live_points,
+				seed=-1, evidence_tolerance=evidence_tolerance,
+				sampling_efficiency=0.8,
 				importance_nested_sampling=True, log_zero=-300.0)
 # const_efficiency_mode=True, sampling_efficiency=1)
 

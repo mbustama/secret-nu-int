@@ -4,7 +4,7 @@ import sys
 cimport numpy as np
 import numpy as np
 
-from libc.math cimport log10
+from libc.math cimport log
 from libc.math cimport exp
 from global_tools import Write_Data_File
 
@@ -16,6 +16,8 @@ from global_tools import Write_Data_File
 # ID_tr, lst_energy_tr, uncertainty_minus_tr, uncertainty_plus_tr, time_tr, \
 #     declination_tr, RA_tr, Med_tr = \
 #     Read_Data_File(os.getcwd()+'/ic_data/data_track.txt')
+
+# ll_den = 273.673 # Log(80!)
 
 
 cdef double Partial_Likelihood_Showers(int event_index, double gamma,
@@ -62,7 +64,7 @@ cdef double Partial_Likelihood_Tracks(int event_index, double gamma,
     return likelihood
 
 
-def Log10_Likelihood(double gamma, double log10_g, double log10_M,
+def Log_Likelihood(double gamma, double log10_g, double log10_M,
     double N_a, double N_conv, double N_pr, double N_mu,
     list interp_astro_pdf_sh, list pdf_atm_conv_sh, list pdf_atm_pr_sh,
     list interp_astro_pdf_tr, list pdf_atm_conv_tr, list pdf_atm_pr_tr,
@@ -73,7 +75,7 @@ def Log10_Likelihood(double gamma, double log10_g, double log10_M,
 
     cdef double fl_sh
     cdef double fl_tr
-    cdef double log10_likelihood
+    cdef double log_likelihood
     cdef int i
 
     # Showers
@@ -88,9 +90,9 @@ def Log10_Likelihood(double gamma, double log10_g, double log10_M,
                 for i in range(num_ic_tr)])
 
 
-    log10_likelihood = log10(exp(-N_a-N_conv-N_pr-N_mu)*fl_sh*fl_tr)
+    log_likelihood = log(exp(-N_a-N_conv-N_pr-N_mu)*fl_sh*fl_tr)
 
-    return log10_likelihood
+    return log_likelihood
 
 
 
