@@ -51,15 +51,20 @@ def Prior(cube, ndim, nparams):
 
 	# Expected number of astrophysical neutrinos. Uniform distribution between 0 and 80.
 	cube[3] = cube[3]*80
+	# cube[1] = cube[1]*80
+	# cube[3] = 10.**(cube[3]*(1.9084+3.0)-3.0)
 
 	# Expected number of conv. atm. neutrinos. Uniform distribution between 0 and 80.
 	cube[4] = cube[4]*80
+	# cube[4] = 10.**(cube[4]*(1.9084-3.0)+3.0)
 
 	# Expected number of prompt atm. neutrinos. Uniform distribution between 0 and 80.
-	cube[5] = cube[5]*80
+	cube[5] = cube[5]*1
+	# cube[5] = 10.**(cube[5]*(1.9084-3.0)+3.0)
 
 	# Expected number of atm. muons. Uniform distribution between 0 and 80.
 	cube[6] = cube[6]*80
+	# cube[6] = 10.**(cube[6]*(1.9084-3.0)+3.0)
 
 	return 0
 
@@ -95,14 +100,15 @@ interp_astro_pdf_sh, interp_astro_pdf_tr = \
 parameters = ["gamma", "log10_g", "log10_M", "N_a", "N_conv", "N_pr", "N_mu"]
 n_params = len(parameters)
 
-
 # Run MultiNest
 pymultinest.run(Log_Likelihood_MultiNest, Prior, n_params,
 	            outputfiles_basename='out/likelihood/',
 				resume=resume, verbose=verbose, n_live_points=n_live_points,
 				seed=-1, evidence_tolerance=evidence_tolerance,
 				sampling_efficiency=0.8,
-				importance_nested_sampling=True, log_zero=-300.0)
+				importance_nested_sampling=True,
+				const_efficiency_mode=False)
+				#, log_zero=-300.0)
 # const_efficiency_mode=True, sampling_efficiency=1)
 
 json.dump(parameters, open('out/likelihood/params.json', 'w')) # Save parameter names
