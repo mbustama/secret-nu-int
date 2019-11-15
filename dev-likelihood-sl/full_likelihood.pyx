@@ -87,17 +87,21 @@ def Log_Likelihood(double gamma, double log10_g, double log10_M,
     # Call Initialize_Interpolator_Astrophysical_PDF and
     # Initialize_Atmospheric_PDFs (once) before calling this function
 
-    cdef double fl_sh
-    cdef double fl_tr
+    # cdef double fl_sh
+    # cdef double fl_tr
+    cdef double log_fl_sh
+    cdef double log_fl_tr
     cdef double log_likelihood
-    # cdef double tt
     cdef int i
 
     # Showers
-    fl_sh = multiply_manual( \
-            [Partial_Likelihood_Showers(i, gamma, log10_g, log10_M, N_a,
-                N_conv, N_pr, N_mu, interp_astro_pdf_sh, pdf_atm_conv_sh,
-                pdf_atm_pr_sh, verbose=verbose) for i in range(num_ic_sh)])
+    log_fl_sh = sum([log(Partial_Likelihood_Showers(i, gamma, log10_g, log10_M,
+                N_a, N_conv, N_pr, N_mu, interp_astro_pdf_sh, pdf_atm_conv_sh,
+                pdf_atm_pr_sh, verbose=verbose)) for i in range(num_ic_sh)])
+    # fl_sh = multiply_manual( \
+    #         [Partial_Likelihood_Showers(i, gamma, log10_g, log10_M, N_a,
+    #             N_conv, N_pr, N_mu, interp_astro_pdf_sh, pdf_atm_conv_sh,
+    #             pdf_atm_pr_sh, verbose=verbose) for i in range(num_ic_sh)])
     # fl_sh = reduce(lambda x, y: x*y, \
     #         [Partial_Likelihood_Showers(i, gamma, log10_g, log10_M, N_a,
     #             N_conv, N_pr, N_mu, interp_astro_pdf_sh, pdf_atm_conv_sh,
@@ -107,11 +111,15 @@ def Log_Likelihood(double gamma, double log10_g, double log10_M,
     #             pdf_atm_pr_sh, verbose=verbose) for i in range(num_ic_sh)])
 
     # Tracks
-    fl_tr = multiply_manual( \
-            [Partial_Likelihood_Tracks(i, gamma, log10_g, log10_M, N_a,
-                N_conv, N_pr, N_mu, interp_astro_pdf_tr, pdf_atm_conv_tr,
-                pdf_atm_pr_tr, pdf_atm_muon_tr, verbose=verbose) \
+    log_fl_tr = sum([log(Partial_Likelihood_Tracks(i, gamma, log10_g, log10_M,
+                N_a, N_conv, N_pr, N_mu, interp_astro_pdf_tr, pdf_atm_conv_tr,
+                pdf_atm_pr_tr, pdf_atm_muon_tr, verbose=verbose)) \
                 for i in range(num_ic_tr)])
+    # fl_tr = multiply_manual( \
+    #         [Partial_Likelihood_Tracks(i, gamma, log10_g, log10_M, N_a,
+    #             N_conv, N_pr, N_mu, interp_astro_pdf_tr, pdf_atm_conv_tr,
+    #             pdf_atm_pr_tr, pdf_atm_muon_tr, verbose=verbose) \
+    #             for i in range(num_ic_tr)])
     # fl_tr = reduce(lambda x, y: x*y, \
     #         [Partial_Likelihood_Tracks(i, gamma, log10_g, log10_M, N_a,
     #             N_conv, N_pr, N_mu, interp_astro_pdf_tr, pdf_atm_conv_tr,
@@ -123,10 +131,9 @@ def Log_Likelihood(double gamma, double log10_g, double log10_M,
     #             for i in range(num_ic_tr)])
 
 
-    log_likelihood = log(exp(-N_a-N_conv-N_pr-N_mu)*fl_sh*fl_tr) + 400.0 #-ll_den
+    log_likelihood = -N_a-N_conv-N_pr-N_mu+log_fl_sh+log_fl_tr #+ 700.0 #-ll_den
+    # log_likelihood = log(exp(-N_a-N_conv-N_pr-N_mu)*fl_sh*fl_tr) + 700.0 #-ll_den
 
-    # tt = N_a+N_conv+N_pr+N_mu-80.0
-    # log_likelihood = log(exp(-N_a-N_conv-N_pr-N_mu)*fl_sh*fl_tr/tt)-ll_den
 
     return log_likelihood
 
